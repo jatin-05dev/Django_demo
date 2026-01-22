@@ -77,3 +77,30 @@ def logout(req):
         return redirect('login')
     else:
         return redirect('login')
+    
+
+def home(req):
+     if 'user_id' in req.session:
+        id = req.session['user_id']
+        userdata = Student.objects.get(id=id)
+        data = {
+            'name':userdata.name,
+            'email':userdata.email,
+            'contact':userdata.contact,
+            'password':userdata.password,
+        }
+        return render(req,'home.html',{'data':data})
+     return render(req,'home.html')
+
+def about(req):
+     if 'user_id' in req.session:
+        id = req.session['user_id']
+        userdata = Student.objects.get(id=id)
+        data = {
+            'name':userdata.name,
+            'email':userdata.email,
+            'contact':userdata.contact,
+            'password':userdata.password,
+        }
+        return render(req,'about.html',{'data':data})
+     return render(req, 'about.html')
