@@ -80,6 +80,7 @@ def logout(req):
     
 
 def home(req):
+    
      if 'user_id' in req.session:
         id = req.session['user_id']
         userdata = Student.objects.get(id=id)
