@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-
+from myapp.models import dep,emp
 # Create your views here.
 def landing(req):
         if 'admin_e' in req.session and 'admin_p' in req.session:
@@ -109,5 +109,45 @@ def x(req):
               return render(req,'x.html')
 
 
+def save_department(req):
+     if req.method=='POST':
+          dname=req.POST.get('dept_name')
+          dcode=req.POST.get('dept_code')
+          dhead=req.POST.get('dept_head')
+          dbudget=req.POST.get('dept_budget')
+          ddesc=req.POST.get('dept_desc')
+          dep.objects.create(dept_name=dname,dept_code=dcode,dept_head=dhead,dept_budget=dbudget,dept_desc=ddesc)
+          return render(req,"admindashboard.html")
+     else:
+          return render(req,'admindashboard.html')
+    
+
+def addemp(req):
+      if req.method=='POST':
+           fname=req.POST.get('fname')
+           lname=req.POST.get('lname')
+           email=req.POST.get('email')
+           img=req.FILES.get('img')
+           adhaar=req.FILES.get('adhaar')
+           code=req.POST.get('code')
+           mobile=req.POST.get('mobile')
+           DOB=req.POST.get('DOB')
+           gender=req.POST.get('gender')
+           edu=req.POST.getlist('edu')
+           dept=req.POST.get('dept')
+           emp.objects.create(fname=fname,lname=lname,email=email,img=img,adhaar=adhaar,code=code,mobile=mobile,DOB=DOB,gender=gender,edu=edu,dept=dept)
+           return render(req,'admindashboard.html')
+      else:
+           return render(req,'admindashboard.html')
+
+
+
+    
+     
+
+
+
+          
+          
 
   

@@ -28,6 +28,10 @@ urlpatterns = [
     path('sin',views.sin,name='sin'),
     path('free',views.free,name='free'),
     path('x',views.x,name='x'),
+    path('save_department',views.save_department,name='save_department'),
+    path('addemp',views.addemp,name='addemp')
+
+
 
 
 
