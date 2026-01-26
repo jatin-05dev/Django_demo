@@ -45,8 +45,7 @@ def login(req):
                 req.session['y']="Email and password not match"
                 return redirect('login')
             
-        else:
-                       
+        else:         
             req.session['y']="Email Not Register"
             return redirect('register')
     else:
