@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect
 from myapp.models import dep,emp
+# /ad/de/d
 # Create your views here.
 def landing(req):
         if 'admin_e' in req.session and 'admin_p' in req.session:
@@ -21,14 +22,14 @@ def lo(req):
             req.session['admin_e'] = e
             req.session['admin_p'] = p
             req.session['admin_n'] = 'admin'
-            return redirect('admindashboard')
+            return redirect('admindpanel')
         else:
             x={'g':"wrong passord or username"}
             return render(req,'lo.html',{'data':x})
 
     return render(req, 'lo.html')
 
-def admindashboard(req):
+def admindpanel(req):
     # Admin Session Check
     if 'admin_e' in req.session and 'admin_p' in req.session:
         a_data = {
@@ -36,7 +37,8 @@ def admindashboard(req):
             'password': req.session['admin_p'],
             'name': req.session['admin_n']
         }
-        return render(req, 'admindashboard.html', {'data': a_data})
+        deptdata=dep.objects.all()
+        return render(req, 'admindpanel.html', {'data': a_data,'deptdata':deptdata})
     else:
         return redirect('lo')
     
@@ -108,19 +110,22 @@ def x(req):
          else:
               return render(req,'x.html')
 
-
+# form wala
 def save_department(req):
-     if req.method=='POST':
+    if req.method=='POST':
           dname=req.POST.get('dept_name')
           dcode=req.POST.get('dept_code')
           dhead=req.POST.get('dept_head')
           dbudget=req.POST.get('dept_budget')
           ddesc=req.POST.get('dept_desc')
-          dep.objects.create(dept_name=dname,dept_code=dcode,dept_head=dhead,dept_budget=dbudget,dept_desc=ddesc)
-          return render(req,"admindashboard.html")
-     else:
-          return render(req,'admindashboard.html')
-    
+          deptdata=dep.objects.filter(dept_name=dname)
+          if not deptdata:
+            dep.objects.create(dept_name=dname,dept_code=dcode,dept_head=dhead,dept_budget=dbudget,dept_desc=ddesc)
+            return redirect("add_department")
+          else:
+            return redirect('add_department')
+     
+    return redirect('lo')
 
 def addemp(req):
       if req.method=='POST':
@@ -136,13 +141,147 @@ def addemp(req):
            edu=req.POST.getlist('edu')
            dept=req.POST.get('dept')
            emp.objects.create(fname=fname,lname=lname,email=email,img=img,adhaar=adhaar,code=code,mobile=mobile,DOB=DOB,gender=gender,edu=edu,dept=dept)
-           return render(req,'admindashboard.html')
+           return render(req,'admindpanel.html')
       else:
-           return render(req,'admindashboard.html')
+           return render(req,'admindpanel.html')
 
+
+# buttons wale
+def add_anlytics(req):
+    if 'admin_e' in req.session and 'admin_p' in req.session:
+          a_data = {
+            'email': req.session['admin_e'],
+            'password': req.session['admin_p'],
+            'name': req.session['admin_n']
+        }
+          return render(req,'admindpanel.html', {'data': a_data,'add_anlytics':True})
+    else:
+        msg={'msg':'login first'}
+        return render(req,"lo.html",{'msg':msg})
+
+def  add_setting(req):
+    if 'admin_e' in req.session and 'admin_p' in req.session:
+          a_data = {
+            'email': req.session['admin_e'],
+            'password': req.session['admin_p'],
+            'name': req.session['admin_n']
+        }
+          return render(req,'admindpanel.html', {'data': a_data,'add_setting':True})
+    else:
+        msg={'msg':'login first'}
+        return render(req,"lo.html",{'msg':msg})
+
+
+def  add_employees(req):
+    if 'admin_e' in req.session and 'admin_p' in req.session:
+          a_data = {
+            'email': req.session['admin_e'],
+            'password': req.session['admin_p'],
+            'name': req.session['admin_n']
+        }
+         
+          deptdata=dep.objects.all()
+          return render(req,'admindpanel.html', {'data': a_data,"add_employees":True,'deptdata':deptdata})
+    
+
+    else:
+        msg={'msg':'login first'}
+        return render(req,"lo.html",{'msg':msg})
+
+def  all_employees(req):
+    if 'admin_e' in req.session and 'admin_p' in req.session:
+          a_data = {
+            'email': req.session['admin_e'],
+            'password': req.session['admin_p'],
+            'name': req.session['admin_n']
+        }
+          return render(req,'admindpanel.html', {'data': a_data,"all_employees":True})
+    else:
+        msg={'msg':'login first'}
+        return render(req,"lo.html",{'msg':msg})
+
+def  remove_employees(req):
+    if 'admin_e' in req.session and 'admin_p' in req.session:
+          a_data = {
+            'email': req.session['admin_e'],
+            'password': req.session['admin_p'],
+            'name': req.session['admin_n']
+        }
+          return render(req,'admindpanel.html', {'data': a_data,"remove_employees":True})
+    else:
+        msg={'msg':'login first'}
+        return render(req,"lo.html",{'msg':msg})
+
+def  remove_department(req):
+    if 'admin_e' in req.session and 'admin_p' in req.session:
+          a_data = {
+            'email': req.session['admin_e'],
+            'password': req.session['admin_p'],
+            'name': req.session['admin_n']
+        }
+          return render(req,'admindpanel.html', {'data': a_data,"remove_department":True})
+    else:
+        msg={'msg':'login first'}
+        return render(req,"lo.html",{'msg':msg})
+
+
+def add_department(req):
+    if 'admin_e' in req.session and 'admin_p' in req.session:
+          a_data = {
+            'email': req.session['admin_e'],
+            'password': req.session['admin_p'],
+            'name': req.session['admin_n']
+        }
+          return render(req,'admindpanel.html', {'data': a_data,"add_department":'add_department'})
+    else:
+        msg={'msg':'login first'}
+        return render(req,"lo.html",{'msg':msg})
+    
+ 
+
+def all_department(req):
+        if 'admin_e' in req.session and 'admin_p' in req.session:
+          a_data = {
+            'email': req.session['admin_e'],
+            'password': req.session['admin_p'],
+            'name': req.session['admin_n']
+        }
+          deptdata=dep.objects.all()
+          return render(req,'admindpanel.html', {'data': a_data,"all_department":True,'deptdata':deptdata})
+    
+        else:
+         msg={'msg':'login first'}
+         return render(req,"lo.html",{'msg':msg})
+    
+def all_quries(req):
+    if 'admin_e' in req.session and 'admin_p' in req.session:
+          a_data = {
+            'email': req.session['admin_e'],
+            'password': req.session['admin_p'],
+            'name': req.session['admin_n']
+        }
+          return render(req,'admindpanel.html', {'data': a_data,"all_quries":True})
+    else:
+        msg={'msg':'login first'}
+        return render(req,"lo.html",{'msg':msg})
+    
+def payroll(req):
+    if 'admin_e' in req.session and 'admin_p' in req.session:
+          a_data = {
+            'email': req.session['admin_e'],
+            'password': req.session['admin_p'],
+            'name': req.session['admin_n']
+        }
+          return render(req,'admindpanel.html', {'data': a_data,"payroll":True})
+    else:
+        msg={'msg':'login first'}
+        return render(req,"lo.html",{'msg':msg})
+    
 
 
     
+
+
      
 
 
