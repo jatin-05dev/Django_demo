@@ -38,7 +38,8 @@ def admindpanel(req):
             'name': req.session['admin_n']
         }
         deptdata=dep.objects.all()
-        return render(req, 'admindpanel.html', {'data': a_data,'deptdata':deptdata})
+        all_emp=emp.objects.all()
+        return render(req, 'admindpanel.html', {'data': a_data,'deptdata':deptdata,'all_emp':all_emp})
     else:
         return redirect('lo')
     
@@ -119,7 +120,8 @@ def save_department(req):
           dbudget=req.POST.get('dept_budget')
           ddesc=req.POST.get('dept_desc')
           deptdata=dep.objects.filter(dept_name=dname)
-          if not deptdata:
+          de=dep.objects.all()
+          if not deptdata and de:
             dep.objects.create(dept_name=dname,dept_code=dcode,dept_head=dhead,dept_budget=dbudget,dept_desc=ddesc)
             return redirect("add_department")
           else:
@@ -209,7 +211,7 @@ def  all_employees(req):
             'name': req.session['admin_n']
         }
           all_emp = emp.objects.all()
-          return render(req,'admindpanel.html', {'data': a_data,"all_employees":all_emp})
+          return render(req,'admindpanel.html', {'data': a_data,"all_employees":True,'all_emp':all_emp})
     else:
         msg={'msg':'login first'}
         return render(req,"lo.html",{'msg':msg})

@@ -32,10 +32,13 @@ urlpatterns = [
     path('addemp',views.addemp,name='addemp'),
     path('add_anlytics',views.add_anlytics,name='add_anlytics'),
     path('add_setting',views.add_setting,name='add_setting'),
+
+
     path('add_employees',views.add_employees,name='add_employees'),
     path('all_employees',views.all_employees,name='all_employees'),
     path('remove_employees',views.remove_employees,name='remove_employees'),
     path('remove_department',views.remove_department,name='remove_department'),
+    
     path('add_department',views.add_department,name='add_department'),
     path('all_department',views.all_department,name='all_department'),
     path('all_quries',views.all_quries,name='all_quries'),

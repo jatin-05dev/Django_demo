@@ -311,7 +311,7 @@
         {% elif add_employees %}
         <div class="form-card">
             <h2 style="margin-top: 0; margin-bottom: 30px;">Register New Employee</h2>
-            <form action="addemp" method="POST">
+            <form action="addemp" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div
                     style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-family: sans-serif; background: #fff; padding: 20px; border-radius: 8px;">
@@ -328,11 +328,11 @@
                             Address</label><input type="email" name="email" placeholder="john@company.com" required
                             style="width:100%; padding:10px; border:1px solid #ccc; border-radius:4px;"></div>
 
-                    <div class="form-group"><label style="display:block; margin-bottom:5px; font-weight:600;">Add
+                    <div class="form-group"><label style="display:block; margin-bottom:5px; font-weight:600;">upload
                             Image</label><input type="file" accept="image/*" name="img" required
                             style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; background:#f9f9f9;">
                     </div>
-                      <div class="form-group"><label style="display:block; margin-bottom:5px; font-weight:600;">Add
+                      <div class="form-group"><label style="display:block; margin-bottom:5px; font-weight:600;">upload
                             ADHAAR</label><input type="file" accept="image/*" name="adhaar" required
                             style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; background:#f9f9f9;">
                     </div>
@@ -396,6 +396,9 @@
 
                 <div class="form-group"><label>Department</label>
                     <select name="dept">
+                    {% if deptdata %}
+                    
+                  
                     {% for i in deptdata %}
                          
                         <option value={{i.dept_name}}>{{i.dept_name}}</option>
@@ -403,6 +406,10 @@
 
                          
                     {% endfor %}
+                      {% else %}
+                        <option value="notselected">there are no department</option>
+
+                    {% endif %}
 
                     </select>
                 </div>
@@ -417,37 +424,43 @@
 {% elif all_employees %}
 <div class="form-card" style="max-width: 100%;">
     <h2>All Employees</h2>
+    {% if all_emp %}
+    
+
     <table class="content-table">
+    
         <thead>
             <tr>
+             <th>S.no</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Department</th>
-                <th>Role</th>
+                <th>code</th>
+                <th>mobile</th>
+
             </tr>
         </thead>
         <tbody>
-        {% if all_emp %}
-        {% for i in all_emp %}
          
-        {% endfor %}
-        {% else %}
-        {% endif %}
-        
-            <tr>
-                <td>Rajesh Kumar</td>
-                <td>rajesh@hr.com</td>
-                <td>HR</td>
-                <td>Manager</td>
-            </tr>
-            <tr>
-                <td>Suresh Singh</td>
-                <td>suresh@it.com</td>
-                <td>IT</td>
-                <td>Developer</td>
+            
+            {% for i in  all_emp %}
+
+              <tr>
+                   <td>{{forloop.counter}}</td>
+                    <td>{{i.fname}}</td>
+                    <td>{{i.email}}</td>
+                    <td>{{i.dept}}</td>
+                    <td>{{i.code}}</td>
+                    <td>{{i.mobile}}</td>
+
+
+            {% endfor%}
             </tr>
         </tbody>
     </table>
+        {% else %}
+     <h1>   first add your employees </h1>
+    {% endif %}
 </div>
 
 {% elif remove_employees %}
@@ -576,6 +589,10 @@
 <div class="form-card" style="max-width: 100%;">
 
     <h2>All Departments</h2>
+
+    {% if deptdata %}
+    
+ 
     <table class="content-table">
         <thead>
             <tr>
@@ -599,6 +616,11 @@
         </tbody>
         {% endfor %}
     </table>
+       {% else %}
+       <h1>
+       first add department
+       </h1>
+    {% endif %}
 </div>
 
 {% elif all_quries %}
@@ -634,7 +656,7 @@
     <div class="info-card">
         <div class="info-data">
             <p>Total Employees</p>
-            <h1>452</h1>
+            <h1>{{all_emp.count|default:'0'}}</h1>
         </div>
         <div class="info-icon-large"><span class="material-icons-outlined">badge</span></div>
     </div>
