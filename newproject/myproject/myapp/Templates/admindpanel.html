@@ -427,6 +427,13 @@
             </tr>
         </thead>
         <tbody>
+        {% if all_emp %}
+        {% for i in all_emp %}
+         
+        {% endfor %}
+        {% else %}
+        {% endif %}
+        
             <tr>
                 <td>Rajesh Kumar</td>
                 <td>rajesh@hr.com</td>
@@ -634,7 +641,7 @@
     <div class="info-card">
         <div class="info-data">
             <p>Total Departments</p>
-            <h1>{{deptdata.count}}</h1>
+            <h1>{{deptdata.count|default:'0'}}</h1>
         </div>
         <div class="info-icon-large" style="background: #fff7ed; color: #f59e0b;"><span
                 class="material-icons-outlined">account_tree</span></div>

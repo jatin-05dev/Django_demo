@@ -128,22 +128,35 @@ def save_department(req):
     return redirect('lo')
 
 def addemp(req):
-      if req.method=='POST':
-           fname=req.POST.get('fname')
-           lname=req.POST.get('lname')
-           email=req.POST.get('email')
-           img=req.FILES.get('img')
-           adhaar=req.FILES.get('adhaar')
-           code=req.POST.get('code')
-           mobile=req.POST.get('mobile')
-           DOB=req.POST.get('DOB')
-           gender=req.POST.get('gender')
-           edu=req.POST.getlist('edu')
-           dept=req.POST.get('dept')
-           emp.objects.create(fname=fname,lname=lname,email=email,img=img,adhaar=adhaar,code=code,mobile=mobile,DOB=DOB,gender=gender,edu=edu,dept=dept)
-           return render(req,'admindpanel.html')
-      else:
-           return render(req,'admindpanel.html')
+        if 'admin_e' in req.session and 'admin_p' in req.session:
+            a_data = {
+                    'email': req.session['admin_e'],
+                    'password': req.session['admin_p'],
+                    'name': req.session['admin_n']
+                } 
+            if req.method=='POST':
+                fname=req.POST.get('fname')
+                lname=req.POST.get('lname')
+                email=req.POST.get('email')
+                img=req.FILES.get('img')
+                adhaar=req.FILES.get('adhaar')
+                code=req.POST.get('code')
+                mobile=req.POST.get('mobile')
+                DOB=req.POST.get('DOB')
+                gender=req.POST.get('gender')
+                edu=req.POST.getlist('edu')
+                dept=req.POST.get('dept')
+                user=emp.objects.filter(code=code)
+                if user:
+                    deptdata=dep.objects.all()
+                    return render(req,'admindpanel.html', {'data': a_data,"add_employees":True,'deptdata':deptdata})
+                else:
+                     
+                    emp.objects.create(fname=fname,lname=lname,email=email,img=img,adhaar=adhaar,code=code,mobile=mobile,DOB=DOB,gender=gender,edu=edu,dept=dept)
+                    deptdata=dep.objects.all()
+                    return render(req,'admindpanel.html', {'data': a_data,"add_employees":True,'deptdata':deptdata})
+        else:
+            return redirect('lo')
 
 
 # buttons wale
@@ -195,7 +208,8 @@ def  all_employees(req):
             'password': req.session['admin_p'],
             'name': req.session['admin_n']
         }
-          return render(req,'admindpanel.html', {'data': a_data,"all_employees":True})
+          all_emp = emp.objects.all()
+          return render(req,'admindpanel.html', {'data': a_data,"all_employees":all_emp})
     else:
         msg={'msg':'login first'}
         return render(req,"lo.html",{'msg':msg})
