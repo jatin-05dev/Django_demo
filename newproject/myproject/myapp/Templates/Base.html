@@ -27,10 +27,10 @@
             <nav style="display: flex; gap: 20px;">
                 <a href={% url 'landing' %} style="text-decoration: none; color: inherit;">Microsoft 365</a>
                 <a href={% url 'sin' %} style="text-decoration: none; color: inherit;">Teams</a>
-                <a href={% url 'tr' %} style="text-decoration: none; color: inherit;">Copilot</a>
-                <a href={% url 'o' %} style="text-decoration: none; color: inherit;">Windows</a>
+                <a href={% url 'about' %} style="text-decoration: none; color: inherit;">Copilot</a>
+                <a href={% url 'services' %} style="text-decoration: none; color: inherit;">Windows</a>
                 <a href={% url 'free' %} style="text-decoration: none; color: inherit;">Surface</a>
-                <a href={% url 'x' %} style="text-decoration: none; color: inherit;">Xbox</a>
+                <a href={% url 'xbox' %} style="text-decoration: none; color: inherit;">Xbox</a>
             </nav>
         </div>
 
@@ -49,7 +49,7 @@
 
             <div style="display: flex; align-items: center; cursor: pointer; gap: 8px;">
                 {% if not data %}
-                <span> <a style="text-decoration: none;" href="{% url 'lo'  %}">log in </a></span>
+                <span> <a style="text-decoration: none;" href="{% url 'login'  %}">log in </a></span>
                 {% else %}
                 <span> <a style="text-decoration: none;" href="{% url 'logout'  %}">log out </a></span>
 
@@ -62,7 +62,7 @@
                 {% if data %}
                    <a href={% url 'admindpanel' %}>👤</a> 
                 {% else %}
-                   <a href={% url 'lo' %}>👤</a> 
+                   <a href={% url 'login' %}>👤</a> 
                 {% endif %}
                 </div>
             </div>

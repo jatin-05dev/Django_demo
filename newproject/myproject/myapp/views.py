@@ -14,7 +14,7 @@ def landing(req):
              return render(req,'landing.html')
 
 
-def lo(req):
+def login(req):
     if req.method == 'POST':
         e = req.POST.get('email')
         p = req.POST.get('password')
@@ -25,9 +25,9 @@ def lo(req):
             return redirect('admindpanel')
         else:
             x={'g':"wrong passord or username"}
-            return render(req,'lo.html',{'data':x})
+            return render(req,'login.html',{'data':x})
 
-    return render(req, 'lo.html')
+    return render(req, 'login.html')
 
 def admindpanel(req):
     # Admin Session Check
@@ -41,7 +41,7 @@ def admindpanel(req):
         all_emp=emp.objects.all()
         return render(req, 'admindpanel.html', {'data': a_data,'deptdata':deptdata,'all_emp':all_emp})
     else:
-        return redirect('lo')
+        return redirect('login')
     
 
 
@@ -50,30 +50,30 @@ def logout(req):
         req.session.flush()
         return redirect('landing')
     else:
-        return redirect('lo')
+        return redirect('login')
    
 
-def tr(req):
+def about(req):
        if 'admin_e' in req.session and 'admin_p' in req.session:
         a_data = {
             'email': req.session['admin_e'],
             'password': req.session['admin_p'],
             'name': req.session['admin_n']
         }
-        return render(req,'tr.html', {'data': a_data})
+        return render(req,'about.html', {'data': a_data})
        else:
-            return render(req,'tr.html')
+            return render(req,'about.html')
 
-def o(req):
+def services(req):
         if 'admin_e' in req.session and 'admin_p' in req.session:
          a_data = {
             'email': req.session['admin_e'],
             'password': req.session['admin_p'],
             'name': req.session['admin_n']
         }
-         return render(req,'o.html', {'data': a_data})
+         return render(req,'services.html', {'data': a_data})
         else:
-            return render(req,'o.html')
+            return render(req,'services.html')
 
 
 
@@ -100,16 +100,16 @@ def free(req):
             else:
                  return render(req,'free.html')
 
-def x(req):
+def xbox(req):
          if 'admin_e' in req.session and 'admin_p' in req.session:
           a_data = {
             'email': req.session['admin_e'],
             'password': req.session['admin_p'],
             'name': req.session['admin_n']
         }
-          return render(req,'x.html', {'data': a_data})
+          return render(req,'xbox.html', {'data': a_data})
          else:
-              return render(req,'x.html')
+              return render(req,'xbox.html')
 
 # form wala
 def save_department(req):
@@ -120,14 +120,13 @@ def save_department(req):
           dbudget=req.POST.get('dept_budget')
           ddesc=req.POST.get('dept_desc')
           deptdata=dep.objects.filter(dept_name=dname)
-          de=dep.objects.all()
-          if not deptdata and de:
+          if not deptdata:
             dep.objects.create(dept_name=dname,dept_code=dcode,dept_head=dhead,dept_budget=dbudget,dept_desc=ddesc)
             return redirect("add_department")
           else:
             return redirect('add_department')
      
-    return redirect('lo')
+    return redirect('login')
 
 def addemp(req):
         if 'admin_e' in req.session and 'admin_p' in req.session:
@@ -149,7 +148,11 @@ def addemp(req):
                 edu=req.POST.getlist('edu')
                 dept=req.POST.get('dept')
                 user=emp.objects.filter(code=code)
-                if user:
+                al=dep.objects.all()
+                if user :
+                    deptdata=dep.objects.all()
+                    return render(req,'admindpanel.html', {'data': a_data,"add_employees":True,'deptdata':deptdata})
+                if not al.exists():
                     deptdata=dep.objects.all()
                     return render(req,'admindpanel.html', {'data': a_data,"add_employees":True,'deptdata':deptdata})
                 else:
@@ -158,7 +161,7 @@ def addemp(req):
                     deptdata=dep.objects.all()
                     return render(req,'admindpanel.html', {'data': a_data,"add_employees":True,'deptdata':deptdata})
         else:
-            return redirect('lo')
+            return redirect('login')
 
 
 # buttons wale
@@ -172,7 +175,7 @@ def add_anlytics(req):
           return render(req,'admindpanel.html', {'data': a_data,'add_anlytics':True})
     else:
         msg={'msg':'login first'}
-        return render(req,"lo.html",{'msg':msg})
+        return render(req,"login.html",{'msg':msg})
 
 def  add_setting(req):
     if 'admin_e' in req.session and 'admin_p' in req.session:
@@ -184,7 +187,7 @@ def  add_setting(req):
           return render(req,'admindpanel.html', {'data': a_data,'add_setting':True})
     else:
         msg={'msg':'login first'}
-        return render(req,"lo.html",{'msg':msg})
+        return render(req,"login.html",{'msg':msg})
 
 
 def  add_employees(req):
@@ -201,7 +204,7 @@ def  add_employees(req):
 
     else:
         msg={'msg':'login first'}
-        return render(req,"lo.html",{'msg':msg})
+        return render(req,"login.html",{'msg':msg})
 
 def  all_employees(req):
     if 'admin_e' in req.session and 'admin_p' in req.session:
@@ -214,7 +217,7 @@ def  all_employees(req):
           return render(req,'admindpanel.html', {'data': a_data,"all_employees":True,'all_emp':all_emp})
     else:
         msg={'msg':'login first'}
-        return render(req,"lo.html",{'msg':msg})
+        return render(req,"login.html",{'msg':msg})
 
 def  remove_employees(req):
     if 'admin_e' in req.session and 'admin_p' in req.session:
@@ -226,7 +229,7 @@ def  remove_employees(req):
           return render(req,'admindpanel.html', {'data': a_data,"remove_employees":True})
     else:
         msg={'msg':'login first'}
-        return render(req,"lo.html",{'msg':msg})
+        return render(req,"login.html",{'msg':msg})
 
 def  remove_department(req):
     if 'admin_e' in req.session and 'admin_p' in req.session:
@@ -238,7 +241,7 @@ def  remove_department(req):
           return render(req,'admindpanel.html', {'data': a_data,"remove_department":True})
     else:
         msg={'msg':'login first'}
-        return render(req,"lo.html",{'msg':msg})
+        return render(req,"login.html",{'msg':msg})
 
 
 def add_department(req):
@@ -251,7 +254,7 @@ def add_department(req):
           return render(req,'admindpanel.html', {'data': a_data,"add_department":'add_department'})
     else:
         msg={'msg':'login first'}
-        return render(req,"lo.html",{'msg':msg})
+        return render(req,"login.html",{'msg':msg})
     
  
 
@@ -267,7 +270,7 @@ def all_department(req):
     
         else:
          msg={'msg':'login first'}
-         return render(req,"lo.html",{'msg':msg})
+         return render(req,"login.html",{'msg':msg})
     
 def all_quries(req):
     if 'admin_e' in req.session and 'admin_p' in req.session:
@@ -279,7 +282,7 @@ def all_quries(req):
           return render(req,'admindpanel.html', {'data': a_data,"all_quries":True})
     else:
         msg={'msg':'login first'}
-        return render(req,"lo.html",{'msg':msg})
+        return render(req,"login.html",{'msg':msg})
     
 def payroll(req):
     if 'admin_e' in req.session and 'admin_p' in req.session:
@@ -291,7 +294,7 @@ def payroll(req):
           return render(req,'admindpanel.html', {'data': a_data,"payroll":True})
     else:
         msg={'msg':'login first'}
-        return render(req,"lo.html",{'msg':msg})
+        return render(req,"login.html",{'msg':msg})
     
 
 
