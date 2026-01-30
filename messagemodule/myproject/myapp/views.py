@@ -9,6 +9,9 @@ def index(req):
     messages.debug(req,"debug")
     messages.warning(req,"warning")
     return redirect(home)
+    # return render(req,'home.html')
+
+
 
 def home(req):
     return render(req,'home.html')
