@@ -1,0 +1,100 @@
+ {% extends "Base.html" %}
+
+{% block title %}OTP Verify{% endblock %}
+
+{% block css %}
+<style>
+    .login-box {
+        width: 350px;
+        margin: 60px auto;
+        background: white;
+        padding: 25px;
+        border-radius: 6px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .login-box h2 {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .timer-text {
+        text-align: center;
+        margin-bottom: 15px;
+        font-weight: bold;
+        color: red;
+    }
+
+    .login-box input {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .login-box button {
+        width: 100%;
+        padding: 10px;
+        background: #4caf50;
+        border: none;
+        color: white;
+        font-size: 16px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .login-box button:hover {
+        background: #388e3c;
+    }
+</style>
+{% endblock css %}
+
+{% block content %}
+<div class="login-box">
+    <h2>Enter OTP</h2>
+
+    <!-- 🔴 TIMER -->
+    <p class="timer-text">
+        OTP expires in <span id="timer">01:00</span>
+    </p>
+
+    <form method="POST" action="{% url 'otpv' %}">
+        {% csrf_token %}
+
+        {% if messages %}
+            {% for i in messages %}
+                <div class="alert alert-{{ i.tags }} alert-dismissible fade show" role="alert">
+                    {{ i }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <input type="text" name="otp" placeholder="Enter OTP" required>
+
+        <button type="submit" id="verifyBtn">Verify OTP</button>
+        <br><br>
+        <button  id="verifyBtn"><a href="{% url 'fp' %}">resend otp</a></button>
+
+    </form>
+</div>
+
+<!-- ⏱️ TIMER SCRIPT -->
+<script>
+    let time = 60; // 1 minute
+
+    let countdown = setInterval(function () {
+        let seconds = time < 10 ? "0" + time : time;
+        document.getElementById("timer").innerText = "00:" + seconds;
+
+        time--;
+
+        if (time < 0) {
+            clearInterval(countdown);
+            alert("OTP expired");
+            
+        }
+    }, 1000);
+</script>
+{% endblock %}
