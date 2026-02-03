@@ -55,7 +55,7 @@
                 <span> <a style="text-decoration: none;" href="{% url 'logout'  %}">log out </a></span>
 
                 {% endif %}
-            <p style="color: black;">welcome : {{data.name|default:'guest'}}</p>
+            <p style="color: black;">welcome : {{data.fname |default:'guest'}}</p>
 
                 <div style="width: 32px; height: 32px; border: 1px solid #505050; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #505050;">
                 {% if data %}

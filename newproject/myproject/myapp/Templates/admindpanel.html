@@ -756,20 +756,35 @@
 {% elif all_quries %}
 <div class="form-card" style="max-width: 100%;">
     <h2>All Departments</h2>
+    {% if qdata %}
+    
     <table class="content-table">
         <thead>
             <tr>
-                <th>queries Name</th>
-                <th>HOD</th>
-                <th>Total complain</th>
+                <th>S.no</th>
+                <th>employee Name</th>
+                <th>department</th>
+                <th>query</th>
+                <th>email</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>IT Department</td>
-                <td>Amit Sharma</td>
-                <td>24</td>
+             <tr>
+            {% for i in qdata %}
+                   <td>{{forloop.counter}}</td>
+                    <td>{{i.Name}}</td>
+                    <td>{{i.department}}</td>
+                    <td>{{i.Query}}</td>
+                    <td>{{i.Email}}</td>
             </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+       {% else %}
+       <h1>
+    no quries
+       </h1>
+    {% endif %}
         </tbody>
     </table>
 </div>

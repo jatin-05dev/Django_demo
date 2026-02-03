@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from myapp.models import dep,emp
+from myapp.models import dep,emp,query
 from django.contrib import messages
 from django.core.mail import send_mail
 import random
@@ -145,10 +145,11 @@ def save_department(req):
             if not deptdata:
                 dep.objects.create(dept_name=dname,dept_code=dcode,dept_head=dhead,dept_budget=dbudget,dept_desc=ddesc)
                 messages.success(req,"department added")
-                return redirect("add_department",a_data)
+                return render(req,'admindpanel.html',{'a_data':a_data,'add_department':True})
             else:
                 messages.error(req,"department as already present")
-                return redirect('add_department',a_data)
+                return render(req,'admindpanel.html',{'a_data':a_data,'add_department':True})
+                
     else:
      return redirect('login')
 
@@ -310,7 +311,8 @@ def all_quries(req):
             'password': req.session['admin_p'],
             'name': req.session['admin_n']
         }
-          return render(req,'admindpanel.html', {'data': a_data,"all_quries":True})
+          qdata=query.objects.all()
+          return render(req,'admindpanel.html', {'data': a_data,'qdata':qdata,"all_quries":True})
     else:
         msg={'msg':'login first'}
         return render(req,"login.html",{'msg':msg})
@@ -442,3 +444,67 @@ def resend_otp(req):
                )
     req.session.set_expiry(60)   # 1 minute
     return redirect('otp')
+
+
+
+# qurry
+def apply_query(req):
+    if 'emp_id' in req.session:
+       emp_id=req.session.get('emp_id')
+       emp_data=emp.objects.get(id=emp_id)
+       data={
+        'fname':emp_data.fname,
+        'email':emp_data.email,
+        'DOB':emp_data.DOB,
+        'gender':emp_data.gender,
+       'mobile':emp_data.mobile,
+      }
+       depd=dep.objects.all()   
+       print(depd)
+       return render(req,'emppanel.html',{'apply_query':True,'data':data,'depd':depd})
+
+def profile(req):
+    if 'emp_id' in req.session:
+       emp_id=req.session.get('emp_id')
+       emp_data=emp.objects.get(id=emp_id)
+       data={
+        'fname':emp_data.fname,
+        'email':emp_data.email,
+        'DOB':emp_data.DOB,
+        'gender':emp_data.gender,
+       'mobile':emp_data.mobile,
+      }
+       depd=dep.objects.all()   
+       print(depd)
+       return render(req,'emppanel.html',{'profile':True,'data':data,'depd':depd})
+
+
+
+
+def submit_query(req):
+    if req.method=='POST':
+        name=req.POST.get('name')
+        email=req.POST.get('email')
+        message=req.POST.get('message')
+        dept=req.POST.get('dept')
+        query.objects.create(Name=name,Email=email,Query=message,department=dept)
+        messages.success(req,'query raised')
+        if 'emp_id' in req.session:
+            emp_id=req.session.get('emp_id')
+            emp_data=emp.objects.get(id=emp_id)
+            data={
+            'fname':emp_data.fname,
+            'email':emp_data.email,
+            'DOB':emp_data.DOB,
+            'gender':emp_data.gender,
+            'mobile':emp_data.mobile,
+         }
+        depd=dep.objects.all()  
+        return render(req,'emppanel.html',{'data':data,'depd':depd,'apply_query':True})
+    return render(req,'emppanel.html',{'data':data,'depd':depd,'apply_query':True})
+    
+
+
+
+
+

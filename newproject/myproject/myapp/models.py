@@ -23,7 +23,19 @@ class emp(models.Model):
     edu=models.CharField(max_length=50,null=True,blank=True)
     dept=models.CharField(max_length=50,null=True,blank=True)
 
-    
+class query(models.Model):
+    Name=models.CharField(max_length=50)
+    Email=models.EmailField()
+    Query=models.TextField()
+    department=models.CharField(max_length=50)
+    status=models.CharField(max_length=50)
+    admin_rep=models.CharField(default='pending')
+
+
+
+
+
+
 
     
 

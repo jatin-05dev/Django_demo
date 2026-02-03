@@ -86,6 +86,77 @@
         background: var(--accent); color: white; border: none;
         padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: 600;
     }
+
+      .message-wrapper {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    width: 350px;
+}
+
+.custom-alert {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    animation: slideIn 0.4s ease;
+}
+
+/* Icons */
+.alert-icon {
+    font-size: 20px;
+}
+
+/* Text */
+.alert-text {
+    flex: 1;
+}
+
+/* Success */
+.alert-success {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #fff;
+    border: none;
+}
+
+/* Error */
+.alert-error,
+.alert-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #fff;
+    border: none;
+}
+
+/* Warning */
+.alert-warning {
+    background: linear-gradient(135deg, #facc15, #eab308);
+    color: #000;
+    border: none;
+}
+
+/* Info */
+.alert-info {
+    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+    color: #fff;
+    border: none;
+}
+
+/* Animation */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
 </style>
 {% endblock css %}
 
@@ -93,15 +164,13 @@
 <div class="dashboard-container">
     <div class="nav-sidebar">
         <a href="{% url 'emppanel' %}" class="nav-icon active"><span class="material-icons-outlined">dashboard</span></a>
-        {% comment %} <a href="{% url 'emp_profile' %}" class="nav-icon"><span class="material-icons-outlined">person</span></a> {% endcomment %}
         <a href="#" class="nav-icon"><span class="material-icons-outlined">notifications</span></a>
     </div>
 
     <div class="action-panel">
         <h4 class="panel-title">Self Service</h4>
-        <a href="?view=profile" class="action-item"><span class="material-icons-outlined">account_circle</span> My Profile</a>
-        <a href="?view=apply_query" class="action-item"><span class="material-icons-outlined">help_outline</span> Submit Query</a>
-        <a href="?view=query_status" class="action-item"><span class="material-icons-outlined">history</span> Query Status</a>
+        <a href={% url 'profile' %} class="action-item"><span class="material-icons-outlined">account_circle</span> My Profile</a>
+        <a href={% url 'apply_query' %} class="action-item"><span class="material-icons-outlined">help_outline</span> Submit Query</a>
         
         <hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 15px 0;">
         
@@ -116,7 +185,7 @@
 
     <main class="main-content">
         
-        {% if request.GET.view == 'profile' %}
+        {% if profile %}
         <div class="profile-header">
             <img src="{{ data.img.url|default:'https://via.placeholder.com/100' }}" class="profile-img">
             <div>
@@ -135,62 +204,80 @@
             </div>
         </div>
 
-        {% elif request.GET.view == 'apply_query' %}
+        {% elif apply_query %}
         <div class="content-card" style="max-width: 600px;">
             <h2>Submit a Query / Complaint</h2>
             <form method="POST" action="{% url 'submit_query' %}">
+                  {% if messages %}
+  <div class="message-wrapper">
+    {% for i in messages %}
+      <div class="alert alert-{{ i.tags }} alert-dismissible fade show custom-alert"
+           role="alert">
+        <span class="alert-icon">
+          {% if i.tags == 'success' %}
+            ✔
+          {% elif i.tags == 'error' %}
+            ✖
+          {% elif i.tags == 'warning' %}
+            ⚠
+          {% else %}
+            ℹ
+          {% endif %}
+        </span>
+
+        <span class="alert-text">{{ i }}</span>
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close">
+        </button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+                  
                 {% csrf_token %}
                 <div class="form-group">
-                    <label>Subject</label>
-                    <input type="text" name="subject" placeholder="e.g. Salary Issue, Hardware Repair" required>
+                    <label>name</label>
+                    <input type="text" name="name" value={{data.fname}} readonly placeholder="e.g. Salary Issue, Hardware Repair" required>
                 </div>
+                <div class="form-group">
+                    <label>email</label>
+                    <input type="text" name="email" value={{data.email}} readonly placeholder="e.g. Salary Issue, Hardware Repair" required>
+                </div>
+                
                 <div class="form-group">
                     <label>Description</label>
                     <textarea name="message" rows="5" placeholder="Explain your issue in detail..."></textarea>
                 </div>
+                <div class="form-group">
+                    <label>Department</label>
+                     <select name="dept">
+                    {% if depd %}
+                    {% for i in depd %}
+                        <option value={{i.dept_name}}>{{i.dept_name}}</option>                         
+                    {% endfor %}
+                      {% else %}
+                        <option value="notselected"> no department</option>
+                    {% endif %}
+
+                    </select>
+                </div>
                 <button type="submit" class="btn-primary">Submit Query</button>
+
             </form>
         </div>
 
-        {% elif request.GET.view == 'query_status' %}
-        <div class="content-card">
-            <h2>My Queries & Status</h2>
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead>
-                    <tr style="text-align: left; border-bottom: 2px solid #f1f5f9;">
-                        <th style="padding: 12px;">Date</th>
-                        <th>Subject</th>
-                        <th>Status</th>
-                        <th>Admin Reply</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for q in queries %}
-                    <tr style="border-bottom: 1px solid #f1f5f9;">
-                        <td style="padding: 12px;">{{ q.date_created }}</td>
-                        <td>{{ q.subject }}</td>
-                        <td>
-                            {% if q.status == 'Pending' %}
-                            <span class="status-badge bg-pending">Pending</span>
-                            {% else %}
-                            <span class="status-badge bg-success">Resolved</span>
-                            {% endif %}
-                        </td>
-                        <td style="color: #64748b; font-style: italic;">{{ q.admin_comment|default:"Waiting for response..." }}</td>
-                    </tr>
-                    {% empty %}
-                    <tr><td colspan="4" style="text-align: center; padding: 20px;">No queries found.</td></tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+      
 
         {% else %}
         <h2 style="margin-bottom: 20px;">Welcome back, {{ data.fname }}! 👋</h2>
         
         <div class="stats-grid">
             <div class="stat-card">
-                <div><p style="color: #64748b; margin:0;">Open Queries</p><h3>02</h3></div>
+                <div><p style="color: #64748b; margin:0;">Open Queries</p><h3>63</h3></div>
                 <span class="material-icons-outlined" style="color: var(--accent); font-size: 40px;">help_center</span>
             </div>
             <div class="stat-card">
@@ -208,7 +295,20 @@
             <p style="color: #64748b;">No new announcements from HR.</p>
         </div>
         {% endif %}
-
     </main>
 </div>
 {% endblock content %}
+
+{% block js %}
+
+ 
+ <script>
+    setTimeout(function() {
+        var msg = document.querySelector('.message-wrapper');
+        if (msg) {
+            msg.style.display = 'none';
+        }
+    }, 2000);
+</script>
+ 
+{% endblock js %}
