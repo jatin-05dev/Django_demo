@@ -502,6 +502,7 @@ def submit_query(req):
         depd=dep.objects.all()  
         return render(req,'emppanel.html',{'data':data,'depd':depd,'apply_query':True})
     return render(req,'emppanel.html',{'data':data,'depd':depd,'apply_query':True})
+
     
 
 

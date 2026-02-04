@@ -28,8 +28,8 @@ class query(models.Model):
     Email=models.EmailField()
     Query=models.TextField()
     department=models.CharField(max_length=50)
-    status=models.CharField(max_length=50)
-    admin_rep=models.CharField(default='pending')
+    status=models.CharField(max_length=50,default='pending')
+    admin_rep=models.CharField(blank=True)
 
 
 
